@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album de Fotos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form action="/subir" method="post" enctype="multipart/form-data">
+        <input type="file" name="archivo" id="archivo">
+        <button type="submit">Subir</button>
+    </form>
+    <div id="galeria"></div>
+
+    <script>
+        function actualizarGaleria() {
+            fetch('/imagenes').then(res => res.json()).then(datos => {
+                let salida = "";
+                datos.results.forEach((url, index) => {
+                    salida += `<div><img src="${url}" style="width: 100px;"><button onclick="descargarImagen('${datos.files[index]}')">Descargar</button><button onclick="eliminarImagen('${datos.files[index]}')">Eliminar</button></div>`;
+                });
+                document.getElementById('galeria').innerHTML = salida;
+            });
+        }
+
+        function descargarImagen(nombreArchivo) {
+            const url = `/descarga?archivo=${nombreArchivo}`;
+            window.open(url, '_blank').focus();
+        }
+
+        function eliminarImagen(nombreArchivo) {
+            fetch(`/eliminar?archivo=${nombreArchivo}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(() => actualizarGaleria());
+        }
+
+        actualizarGaleria();
+    </script>
+</body>
+</html>
