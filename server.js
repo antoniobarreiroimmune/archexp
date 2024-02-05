@@ -21,17 +21,12 @@ app.post('/subir', (req, res) => {
     const md5 = file.md5;
     const filename = `${md5}${now}${file.name}`;
 
-    file.mv(`./archivos/${filename}`, (err) => {
+    file.mv(`./archivos/${filename}`, err => {
         if (err) {
             return res.status(500).send({ mensaje: "Error al subir el archivo" });
         }
 
-        res.send({
-            mensaje: "Archivo subido",
-            name: filename,
-            size: file.size,
-            mimeType: file.mimetype
-        });
+        res.redirect('/'); 
     });
 });
 
